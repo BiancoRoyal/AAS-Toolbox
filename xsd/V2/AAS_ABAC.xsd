@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema elementFormDefault="qualified" targetNamespace="http://www.admin-shell.io/aas/abac/2/0" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:aas="http://www.admin-shell.io/aas/2/0" xmlns:abac="http://www.admin-shell.io/aas/abac/2/0">
+	<import namespace="http://www.admin-shell.io/aas/2/0" schemaLocation="AAS.xsd"/>
+	<complexType name="security_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="1" name="accessControlPolicyPoints" type="abac:accessControlPolicyPoints_t"/>
+			<element maxOccurs="1" minOccurs="0" name="certificates" type="abac:certificates_t"/>
+			<element maxOccurs="1" minOccurs="0" name="requiredCertificateExtensions" type="aas:references_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="accessControlPolicyPoints_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="1" name="policyAdministrationPoint" type="abac:policyAdministrationPoint_t"/>
+			<element maxOccurs="1" minOccurs="1" name="policyDecisionPoint" type="abac:policyDecisionPoint_t"/>
+			<element maxOccurs="1" minOccurs="1" name="policyEnforcementPoint" type="abac:policyEnforcementPoint_t"/>
+			<element maxOccurs="1" minOccurs="0" name="policyInformationPoints" type="abac:policyInformationPoints_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="policyAdministrationPoint_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="0" name="localAccessControl" type="abac:accessControl_t"/>
+			<element maxOccurs="1" minOccurs="0" name="externalAccessControl" type="boolean"/>
+		</sequence>
+	</complexType>
+	<complexType name="policyDecisionPoint_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="1" name="externalPolicyDecisionPoint" type="boolean"/>
+		</sequence>
+	</complexType>
+	<complexType name="policyEnforcementPoint_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="1" name="externalPolicyEnforcementPoint" type="boolean"/>
+		</sequence>
+	</complexType>
+	<complexType name="policyInformationPoints_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="1" name="externalInformationPoints" type="boolean"/>
+			<element maxOccurs="1" minOccurs="0" name="internalInformationPoints" type="abac:internalInformationPoints"/>
+		</sequence>
+	</complexType>
+	<complexType name="internalInformationPoints">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="0" name="internalInformationPoint" type="aas:submodelRefs_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="accessControl_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="0" name="selectableSubjectAttributes" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="1" name="defaultSubjectAttributes" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="0" name="selectablePermissions" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="1" name="defaultPermissions" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="0" name="selectableEnvironmentAttributes" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="0" name="defaultEnvironmentAttributes" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="0" name="accessPermissionRules" type="abac:accessPermissionRules_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="permissionPerObject_t">
+		<sequence>
+			<element name="object" type="aas:reference_t"/>
+			<element maxOccurs="1" minOccurs="0" name="targetObjectAttributes" type="abac:objectAttributes_t"/>
+			<element maxOccurs="1" minOccurs="0" name="permissions" type="abac:permissions_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="objectAttributes_t">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="1" name="objectAttribute" type="aas:property_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="permissions_t">
+		<sequence>
+			<element maxOccurs="1" minOccurs="1" name="permission" type="aas:property_t"/>
+			<element name="kindOfPermission" type="abac:permissionKind"/>
+		</sequence>
+	</complexType>
+	<simpleType name="permissionKind">
+		<restriction base="string">
+			<enumeration value="Allow"/>
+			<enumeration value="Deny"/>
+			<enumeration value="NotApplicable"/>
+			<enumeration value="Undefined"/>
+		</restriction>
+	</simpleType>
+	<complexType name="accessPermissionRule_t">
+		<sequence>
+			<group ref="aas:qualifiable"/>
+			<group ref="aas:referable"/>
+			<element maxOccurs="unbounded" minOccurs="1" name="targetSubjectAttributes" type="abac:subjectAttributes_t"/>
+			<element maxOccurs="unbounded" minOccurs="0" name="permissionsPerObject" type="abac:permissionPerObject_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="subjectAttributes_t">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="1" name="subjectAttribute" type="aas:property_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="certificates_t">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="1" name="certificate" type="abac:certificate_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="certificate_t">
+		<choice>
+			<element name="blobCertificate" type="abac:blobCertificate_t"/>
+		</choice>
+	</complexType>
+	<element name="internalInformationPoints" type="aas:submodelRefs_t"/>
+	<complexType name="accessPermissionRules_t">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="0" name="accessPermissionRule" type="abac:accessPermissionRule_t"/>
+		</sequence>
+	</complexType>
+	<complexType name="certificateAbstract_t"/>
+	<complexType name="blobCertificate_t">
+		<complexContent>
+			<extension base="abac:certificateAbstract_t">
+				<sequence>
+					<element name="blobCertificate" type="aas:blob_t"/>
+					<element maxOccurs="1" minOccurs="0" name="containedExtensions" type="abac:containedExtensions_t"/>
+					<element name="lastCertificate" type="boolean"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="containedExtensions_t">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="0" name="containedExtension" type="aas:reference_t"/>
+		</sequence>
+	</complexType>
+</schema>
